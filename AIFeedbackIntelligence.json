@@ -1,0 +1,1161 @@
+{
+  "name": "Feedbakcs",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "sender": "zonamental1912@gmail.com"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -48,
+        64
+      ],
+      "id": "11adbcc5-f7ba-4b0a-ad3b-57c27aaf36bd",
+      "name": "Email Recebido",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "puHO2AcJIpfnlWC2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a4f581cf-3c2f-4225-8216-f126db771629",
+              "name": "nome",
+              "value": "={{ $json.from.value[0].name }}",
+              "type": "string"
+            },
+            {
+              "id": "d53f169c-ac5b-4db7-9fa0-1e8f0956f81f",
+              "name": "email",
+              "value": "={{ $json.from.value[0].address }}",
+              "type": "string"
+            },
+            {
+              "id": "7af68b42-b059-4f9a-a0dc-e6e84f31b819",
+              "name": "assunto",
+              "value": "={{ $json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "c08c90b5-7e04-497a-a507-5e52806be821",
+              "name": "texto",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        176,
+        64
+      ],
+      "id": "a51479f8-f94f-4144-8b40-2080169b6ff0",
+      "name": "Dados"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "86cf8e41-4114-4bb2-aa25-4de6491e5b73",
+              "leftValue": "={{ $json.output.urgente }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        752,
+        64
+      ],
+      "id": "5b35feec-ca81-48f5-9015-c2ccb1d18907",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "model": "apodex/apodex-1.1-mini:free",
+        "options": {
+          "temperature": 0.2
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        480,
+        304
+      ],
+      "id": "ad232ac5-bcf6-46ca-994f-27a117cb0593",
+      "name": "Nex-agi/nex-n2.5-pro:free",
+      "credentials": {
+        "openRouterApi": {
+          "id": "p473SIPUyQDsdF6q",
+          "name": "OpenRouter Pessoal"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1056,
+        496
+      ],
+      "id": "a057ff40-d098-4a9d-b83f-e489972d7814",
+      "name": "Nex-agi/nex-n2.5-pro:free1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "p473SIPUyQDsdF6q",
+          "name": "OpenRouter Pessoal"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        1408,
+        560
+      ],
+      "id": "e3fba0a4-ffff-4498-9374-6e09355b4f51",
+      "name": "Nex-agi/nex-n2.5-pro:free2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "p473SIPUyQDsdF6q",
+          "name": "OpenRouter Pessoal"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $('Dados').item.json.texto }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Bug",
+              "description": "Problemas técnicos, relacionado a problemas de hardware ou software.."
+            },
+            {
+              "category": "Reclamação",
+              "description": "Insatisfação geral."
+            },
+            {
+              "category": "Sugestão",
+              "description": "Ideias de melhorias."
+            },
+            {
+              "category": "Elogio",
+              "description": "Feedback positivo."
+            }
+          ]
+        },
+        "options": {
+          "fallback": "other"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [
+        1328,
+        224
+      ],
+      "id": "0a41e7f5-cb89-4eda-836d-2651ecbbd7f4",
+      "name": "Categorizar Feedback"
+    },
+    {
+      "parameters": {
+        "text": "=assunto:{{ $json.assunto }}\nCliente: {{ $json.nome }} / {{ $json.email }}\n\nCorpo do Email: {{ $json.texto }}",
+        "attributes": {
+          "attributes": [
+            {
+              "name": "nome_cliente",
+              "description": "Nome do Cliente(caso não achar pode definir esse valor como \"Nome não identificado!\").",
+              "required": true
+            },
+            {
+              "name": "item_mencionado",
+              "description": "Serviço ou produto mencionado no email, se não encontrar use 'Não Identificado''."
+            },
+            {
+              "name": "ponto_principal",
+              "description": "Principal reclamação, objetivo, elogio, sugestão da mensagem. Em uma frase objetiva"
+            },
+            {
+              "name": "urgente",
+              "type": "boolean",
+              "description": "Indica se a mensagem é urgente ou não.",
+              "required": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.informationExtractor",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        64
+      ],
+      "id": "9b24421a-cb31-453b-a674-61ce35334227",
+      "name": "Extração e Transformação dos Dados"
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Email Recebido').item.json.id }}",
+        "message": "=<h2>⚠️ Feedback urgente identificado</h2>  <p>Um feedback foi classificado como <strong>urgente</strong> e requer atenção.</p>  <p><strong>Cliente:</strong> {{ $json.output.nome_cliente }}</p> <p><strong>E-mail:</strong> {{ $('Dados').item.json.email }}</p> <p><strong>Produto/serviço:</strong> {{ $json.output.item_mencionado }}</p>  <hr>  <p><strong>Resumo do caso:</strong></p>  <p>{{ $json.output.ponto_principal }}</p>  <p><strong>Motivo da urgência:</strong></p>  <hr>  <p><strong>Mensagem original do cliente:</strong></p>  <p>{{ $('Dados').item.json.texto }}</p>  <hr>  <p><strong>Ação recomendada:</strong> entrar em contato com o cliente com prioridade.</p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        -80
+      ],
+      "id": "9e6985b4-ed86-49f9-a9c4-3daf2b2f2a99",
+      "name": "Reply to a message",
+      "webhookId": "61fd718c-cb90-4c32-a1a9-6825de5da0c5",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "puHO2AcJIpfnlWC2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ce7d4bf-d9be-4285-ad77-67a0c9acaadf",
+              "name": "categoria",
+              "value": "bug",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1680,
+        -160
+      ],
+      "id": "f8ddf783-ec97-4a32-92fb-7a3c0b14fed5",
+      "name": "categoriaBug"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ce7d4bf-d9be-4285-ad77-67a0c9acaadf",
+              "name": "categoria",
+              "value": "reclamação",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1680,
+        32
+      ],
+      "id": "0bd918ec-01ab-4107-82a8-00e88ef3ea8a",
+      "name": "categoriaReclamação"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ce7d4bf-d9be-4285-ad77-67a0c9acaadf",
+              "name": "categoria",
+              "value": "sugestão",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1680,
+        224
+      ],
+      "id": "3f0cb678-359e-4df6-bd2f-bb742efaf74c",
+      "name": "categoriaSugestão"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ce7d4bf-d9be-4285-ad77-67a0c9acaadf",
+              "name": "categoria",
+              "value": "elogio",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1680,
+        416
+      ],
+      "id": "ce6ff998-c367-49b6-86cc-a831db06b8b0",
+      "name": "categoriaElogio"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "0ce7d4bf-d9be-4285-ad77-67a0c9acaadf",
+              "name": "categoria",
+              "value": "outro",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        1680,
+        608
+      ],
+      "id": "0bd7955d-0012-4156-8df7-43896b9c917d",
+      "name": "categoriaOutro"
+    },
+    {
+      "parameters": {
+        "sendTo": "clipnews24h@gmail.com",
+        "subject": "ALERTA DE BUG",
+        "message": "=<h2>🚨 Novo Bug Reportado</h2> <p>A equipe de desenvolvimento precisa verificar o seguinte incidente enviado por um cliente/usuário:</p>  <ul>   <li><strong>Cliente:</strong> {{ $('Dados').item.json.nome }} {{ $('Dados').item.json.email }}</li>   <li><strong>Item/Módulo Afetado:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.item_mencionado }}</li>   <li><strong>Resumo do Problema:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.ponto_principal }}</li> </ul>  <p><em>Por favor, analisem e verifiquem se há necessidade de abertura de card/ticket de correção.</em></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1904,
+        -160
+      ],
+      "id": "5bbc0160-7386-45bc-9713-23344625dcd0",
+      "name": "MensagemEquipeBug",
+      "webhookId": "d0a8c406-95b6-4f34-ae68-064bef755290",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "puHO2AcJIpfnlWC2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "kaion8n@gmail.com",
+        "subject": "ALERTA DE BUG",
+        "message": "=<h2>🚨 Nova Reclamação Reportada</h2> <p>A equipe de responsavel precisa verificar o seguinte incidente enviado por um cliente/usuário:</p>  <ul>   <li><strong>Cliente:</strong> {{ $('Dados').item.json.nome }} {{ $('Dados').item.json.email }}</li>   <li><strong>Item/Módulo Afetado:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.item_mencionado }}</li>   <li><strong>Resumo do Problema:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.ponto_principal }}</li> </ul>  <p><em>Por favor, analisem e verifiquem se há necessidade de abertura de card/ticket de correção.</em></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1904,
+        32
+      ],
+      "id": "16d15791-4140-4244-858b-3d0002503a81",
+      "name": "MensagemEquipeReclamação",
+      "webhookId": "d0a8c406-95b6-4f34-ae68-064bef755290",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "puHO2AcJIpfnlWC2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "36532f3d-b9df-4a0a-9ddc-85af9864d5a7",
+              "name": "nome_cliente",
+              "value": "={{ $('Extração e Transformação dos Dados').item.json.output.nome_cliente }}",
+              "type": "string"
+            },
+            {
+              "id": "1a58a952-78fc-4901-814e-659a061dd23c",
+              "name": "item_mencionado",
+              "value": "={{ $('Extração e Transformação dos Dados').item.json.output.item_mencionado }}",
+              "type": "string"
+            },
+            {
+              "id": "23bde2aa-ef49-4259-a12a-97ee145ff383",
+              "name": "ponto_principal",
+              "value": "={{ $('Extração e Transformação dos Dados').item.json.output.ponto_principal }}",
+              "type": "string"
+            },
+            {
+              "id": "bfbfc6a5-7f06-41ff-896e-6a3e6ae183f6",
+              "name": "urgente",
+              "value": "={{ $('Extração e Transformação dos Dados').item.json.output.urgente }}",
+              "type": "boolean"
+            },
+            {
+              "id": "cc199c40-5b3e-4717-8cce-cf248b8ed917",
+              "name": "sentimento",
+              "value": "={{ $('AnaliseSentimento').item.json.sentimentAnalysis.category }}",
+              "type": "string"
+            },
+            {
+              "id": "a94511cc-4997-4dd3-a7bd-cadb26d787de",
+              "name": "categoria",
+              "value": "={{\n  $('categoriaBug').isExecuted ? $('categoriaBug').item.json.categoria :\n  $('categoriaReclamação').isExecuted ? $('categoriaReclamação').item.json.categoria :\n  $('categoriaSugestão').isExecuted ? $('categoriaSugestão').item.json.categoria :\n  $('categoriaElogio').isExecuted ? $('categoriaElogio').item.json.categoria :\n  $('categoriaOutro').isExecuted ? $('categoriaOutro').item.json.categoria :\n  'Não identificado'\n}}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        2128,
+        384
+      ],
+      "id": "d45c33a4-3f84-411e-8929-884b96431b8d",
+      "name": "dadosFinais"
+    },
+    {
+      "parameters": {
+        "sendTo": "kaion8n@gmail.com",
+        "subject": "ALERTA DE BUG",
+        "message": "=<h2>💡 Nova Sugestão Recebida</h2>\n\n<p>Um cliente/usuário enviou uma sugestão que pode contribuir para a melhoria do produto ou serviço:</p>\n\n<ul>\n  <li><strong>Cliente:</strong> {{ $('Dados').item.json.nome }} {{ $('Dados').item.json.email }}</li>\n  <li><strong>Item/Módulo Relacionado:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.item_mencionado }}</li>\n  <li><strong>Resumo da Sugestão:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.ponto_principal }}</li>\n</ul>\n\n<p><em>Por favor, avaliem a sugestão e verifiquem se ela pode ser considerada em futuras melhorias ou atualizações.</em></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1904,
+        224
+      ],
+      "id": "74d2e01a-3047-4490-9e54-9f946998334d",
+      "name": "MensagemEquipeSugestao",
+      "webhookId": "d0a8c406-95b6-4f34-ae68-064bef755290",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "puHO2AcJIpfnlWC2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "kaion8n@gmail.com",
+        "subject": "ALERTA DE BUG",
+        "message": "=<h2>⭐ Novo Elogio Recebido</h2>\n\n<p>Recebemos um feedback positivo de um cliente/usuário sobre nossa solução:</p>\n\n<ul>\n  <li><strong>Cliente:</strong> {{ $('Dados').item.json.nome }} {{ $('Dados').item.json.email }}</li>\n  <li><strong>Item/Módulo Mencionado:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.item_mencionado }}</li>\n  <li><strong>Resumo do Elogio:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.ponto_principal }}</li>\n</ul>\n\n<p><em>Esse retorno pode ser compartilhado com a equipe responsável como reconhecimento pelo trabalho realizado.</em></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1904,
+        416
+      ],
+      "id": "f1ad0c6b-3b30-46ea-8654-75d3e753bbaf",
+      "name": "MensagemEquipeElogio",
+      "webhookId": "d0a8c406-95b6-4f34-ae68-064bef755290",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "puHO2AcJIpfnlWC2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "kaion8n@gmail.com",
+        "subject": "ALERTA DE BUG",
+        "message": "=<h2>📩 Novo Feedback Recebido</h2>\n\n<p>Foi recebido um feedback que não se enquadra nas categorias principais e precisa de análise:</p>\n\n<ul>\n  <li><strong>Cliente:</strong> {{ $('Dados').item.json.nome }} {{ $('Dados').item.json.email }}</li>\n  <li><strong>Item/Módulo Mencionado:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.item_mencionado }}</li>\n  <li><strong>Resumo do Feedback:</strong> {{ $('Extração e Transformação dos Dados').item.json.output.ponto_principal }}</li>\n</ul>\n\n<p><em>Por favor, analisem o conteúdo e direcionem o feedback para a área responsável, caso necessário.</em></p>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1904,
+        608
+      ],
+      "id": "1a98f2b7-d06f-4f5e-8a87-c1a9c975af9e",
+      "name": "MensagemEquipeOutro",
+      "webhookId": "d0a8c406-95b6-4f34-ae68-064bef755290",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "puHO2AcJIpfnlWC2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "summarizationMethodAndPrompts": {
+            "values": {
+              "summarizationMethod": "stuff",
+              "prompt": "Escreva um resumo conciso em PT-BR de no máximo 20 palavras:\n\n\n\"{text}\"\n\n\nRESUMO CONCISO:"
+            }
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+      "typeVersion": 2.1,
+      "position": [
+        2352,
+        384
+      ],
+      "id": "ac400344-df7a-4d42-af9a-cbf4f8c76078",
+      "name": "ResumirFeedback"
+    },
+    {
+      "parameters": {
+        "inputText": "={{ $('Dados').item.json.texto }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.sentimentAnalysis",
+      "typeVersion": 1.1,
+      "position": [
+        976,
+        224
+      ],
+      "id": "4000c8d1-52ad-442e-b1d3-3aea63e0ff52",
+      "name": "AnaliseSentimento"
+    },
+    {
+      "parameters": {
+        "model": "dots-studio/dots-3-note-preview:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        336,
+        1040
+      ],
+      "id": "adbd57d6-2982-4a6f-a56f-78ad31bfe3d6",
+      "name": "Nex-agi/nex-n2.5-pro:free5",
+      "credentials": {
+        "openRouterApi": {
+          "id": "p473SIPUyQDsdF6q",
+          "name": "OpenRouter Pessoal"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1yR-wyFNfTLPpu2-AZETU5LJLB9blmEx4gZMHSdRKXJs",
+          "mode": "list",
+          "cachedResultName": "Feedbacks Mercattone",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yR-wyFNfTLPpu2-AZETU5LJLB9blmEx4gZMHSdRKXJs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Base",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yR-wyFNfTLPpu2-AZETU5LJLB9blmEx4gZMHSdRKXJs/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Cliente": "={{ $('dadosFinais').item.json.nome_cliente }}",
+            "Problema": "={{ $('dadosFinais').item.json.ponto_principal }}",
+            "Sentimento": "={{ $('dadosFinais').item.json.sentimento }}",
+            "Categoria": "={{ $('dadosFinais').item.json.categoria }}",
+            "Resumo": "={{ $json.output.text }}",
+            "Data": "={{ $today.format('yyyy-MM-dd') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Cliente",
+              "displayName": "Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Problema",
+              "displayName": "Problema",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Sentimento",
+              "displayName": "Sentimento",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Categoria",
+              "displayName": "Categoria",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Resumo",
+              "displayName": "Resumo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Data",
+              "displayName": "Data",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2704,
+        384
+      ],
+      "id": "d4bba25c-90c4-4d1a-8753-219b732ae7f3",
+      "name": "inputarDados",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jVKTjH5Y7P2iBBrI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1yR-wyFNfTLPpu2-AZETU5LJLB9blmEx4gZMHSdRKXJs",
+          "mode": "list",
+          "cachedResultName": "Feedbacks Mercattone",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yR-wyFNfTLPpu2-AZETU5LJLB9blmEx4gZMHSdRKXJs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Base",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1yR-wyFNfTLPpu2-AZETU5LJLB9blmEx4gZMHSdRKXJs/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Data",
+              "lookupValue": "={{ $today.format('yyyy-MM-dd') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        176,
+        832
+      ],
+      "id": "07ac7175-ceda-4e57-8890-a6858f9f63ce",
+      "name": "LerFeedbacks",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "jVKTjH5Y7P2iBBrI",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Feedbacks de hoje:\n{{ JSON.stringify($('LerFeedbacks').all(), null, 2) }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=Você é um analista de feedback. Gere um briefing executivo em HTML para o CEO sobre os feedbacks de hoje.\n\nUse tags HTML simples (h1, h2, p, ul, li, b, i). Inclua: título com a data, resumo do dia (total + sentimentos + categorias), casos urgentes, destaques e uma recomendação acionável.\n\nRetorne apenas o HTML, sem blocos de código, sem markdown, sem ```html."
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        400,
+        832
+      ],
+      "id": "8db2b01a-03a0-4736-bcbc-ba2c38b00168",
+      "name": "LLM PromptLivre"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 7,
+              "triggerAtMinute": 30
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -48,
+        832
+      ],
+      "id": "2edf1db1-d4d7-435c-bbcb-6d5ff6ba2105",
+      "name": "GatilhoSchedulado"
+    },
+    {
+      "parameters": {
+        "sendTo": "clipnews24h@gmail.com",
+        "subject": "Relatorio Diário De Feedbacks",
+        "message": "={{ $json.text }}",
+        "options": {
+          "senderName": "Central de Feedback Mercattone"
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        768,
+        832
+      ],
+      "id": "3eb79ef8-d1b8-4092-b024-74223b40bcb3",
+      "name": "EnvioDeRelatoriosDeFeedbacksDiarios",
+      "webhookId": "b5696b56-9a37-42bd-a9e4-b33a9ccf065d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "puHO2AcJIpfnlWC2",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Email Recebido": {
+      "main": [
+        [
+          {
+            "node": "Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dados": {
+      "main": [
+        [
+          {
+            "node": "Extração e Transformação dos Dados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Reply to a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AnaliseSentimento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nex-agi/nex-n2.5-pro:free": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extração e Transformação dos Dados",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nex-agi/nex-n2.5-pro:free1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AnaliseSentimento",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nex-agi/nex-n2.5-pro:free2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Categorizar Feedback",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "ResumirFeedback",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extração e Transformação dos Dados": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Categorizar Feedback": {
+      "main": [
+        [
+          {
+            "node": "categoriaBug",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "categoriaReclamação",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "categoriaSugestão",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "categoriaElogio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "categoriaOutro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "categoriaBug": {
+      "main": [
+        [
+          {
+            "node": "MensagemEquipeBug",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "categoriaReclamação": {
+      "main": [
+        [
+          {
+            "node": "MensagemEquipeReclamação",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "categoriaSugestão": {
+      "main": [
+        [
+          {
+            "node": "MensagemEquipeSugestao",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "categoriaElogio": {
+      "main": [
+        [
+          {
+            "node": "MensagemEquipeElogio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "categoriaOutro": {
+      "main": [
+        [
+          {
+            "node": "MensagemEquipeOutro",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MensagemEquipeBug": {
+      "main": [
+        [
+          {
+            "node": "dadosFinais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MensagemEquipeReclamação": {
+      "main": [
+        [
+          {
+            "node": "dadosFinais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "dadosFinais": {
+      "main": [
+        [
+          {
+            "node": "ResumirFeedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MensagemEquipeSugestao": {
+      "main": [
+        [
+          {
+            "node": "dadosFinais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MensagemEquipeElogio": {
+      "main": [
+        [
+          {
+            "node": "dadosFinais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "MensagemEquipeOutro": {
+      "main": [
+        [
+          {
+            "node": "dadosFinais",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ResumirFeedback": {
+      "main": [
+        [
+          {
+            "node": "inputarDados",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AnaliseSentimento": {
+      "main": [
+        [
+          {
+            "node": "Categorizar Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Categorizar Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Categorizar Feedback",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Nex-agi/nex-n2.5-pro:free5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "LLM PromptLivre",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LerFeedbacks": {
+      "main": [
+        [
+          {
+            "node": "LLM PromptLivre",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LLM PromptLivre": {
+      "main": [
+        [
+          {
+            "node": "EnvioDeRelatoriosDeFeedbacksDiarios",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GatilhoSchedulado": {
+      "main": [
+        [
+          {
+            "node": "LerFeedbacks",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "77493086-353a-43a7-8c43-8db2e9aeb8eb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "536322187bd7038fe7e5eec8562b083b38b3d2103dec93ce99877d844d0d3b03"
+  },
+  "nodeGroups": [],
+  "id": "XDHkv8PWyr6GBhxk",
+  "tags": []
+}
