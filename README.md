@@ -28,7 +28,7 @@ O projeto é dividido em dois fluxos principais.
 
 ## Arquitetura Geral
 
-![Arquitetura geral do projeto](images/projeto-macro.jpeg)
+![Arquitetura geral do projeto](projeto-macro.jpeg)
 
 ---
 
@@ -36,7 +36,7 @@ O projeto é dividido em dois fluxos principais.
 
 Esse fluxo é responsável pelo processamento individual de cada feedback recebido.
 
-![Triagem inteligente de feedbacks](images/triagem-inteligente-feedbacks.jpeg)
+![Triagem inteligente de feedbacks](triagem-inteligente-feedbacks.jpeg)
 
 ### Etapas do fluxo
 
@@ -61,7 +61,7 @@ Esse fluxo é responsável pelo processamento individual de cada feedback recebi
 
 ### Exemplo de e-mail enviado para a equipe
 
-![Email enviado para equipe](images/email-equipes.jpeg)
+![Email enviado para equipe](email-equipes.jpeg)
 
 ---
 
@@ -69,7 +69,7 @@ Esse fluxo é responsável pelo processamento individual de cada feedback recebi
 
 Esse fluxo é executado automaticamente através de um **Schedule Trigger**.
 
-![Briefing executivo diário](images/briefing-executivo-diario.jpeg)
+![Briefing executivo diário](briefing-executivo-diario.jpeg)
 
 O fluxo consulta os feedbacks registrados no Google Sheets e utiliza IA para gerar um resumo executivo diário.
 
@@ -100,7 +100,7 @@ O briefing apresenta informações como:
 
 O Google Sheets foi utilizado como base de dados do projeto.
 
-![Base Google Sheets](images/base-google-sheets.jpeg)
+![Base Google Sheets](base-google-sheets.jpeg)
 
 Os principais campos armazenados são:
 
